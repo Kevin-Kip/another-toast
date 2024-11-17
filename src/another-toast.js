@@ -1,21 +1,24 @@
-const AnotherToast = {
-    init() {
-        if (document.getElementsByClassName('another-toast').length < 1) {
+const AnotherToast = (function () {
+    function init() {
+        if (document.getElementsByClassName('another-toast-container').length < 1) {
             const container = document.createElement('div');
-            container.className = 'another-toast';
+            container.className = 'another-toast-container';
             document.body.appendChild(container);
         }
-    },
-    show(message, options = {}) {
-        this.init();
+    }
+
+    function show(message, options = {}) {
+        init();
 
         const defaultOptions = {
-            type: 'info',
             position: 'top-right',
-            duration: 3000
+            duration: 30000
         };
 
         const settings = {...options, ...defaultOptions};
+        if (settings.type === undefined || settings.type === null) {
+            settings.type = 'info';
+        }
 
         const toast = document.createElement('div');
         toast.className = `another-toast another-toast-${settings.type} another-toast-${settings.position}`;
@@ -32,19 +35,22 @@ const AnotherToast = {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, settings.duration);
-    },
-    success(message, options = {}) {
-        this.show(message, {...options, type: 'success'});
-    },
-    warning(message, options = {}) {
-        this.show(message, {...options, type: 'warning'});
-    },
-    info(message, options = {}) {
-        this.show(message, {...options, type: 'info'});
-    },
-    error(message, options = {}) {
-        this.show(message, {...options, type: 'error'});
     }
-};
+
+    return {
+        success(message, options = {}) {
+            show(message, {...options, type: 'success'});
+        },
+        warning(message, options = {}) {
+            show(message, {...options, type: 'warning'});
+        },
+        info(message, options = {}) {
+            show(message, {...options, type: 'info'});
+        },
+        error(message, options = {}) {
+            show(message, {...options, type: 'error'});
+        }
+    }
+})();
 
 window.AnotherToast = AnotherToast;
